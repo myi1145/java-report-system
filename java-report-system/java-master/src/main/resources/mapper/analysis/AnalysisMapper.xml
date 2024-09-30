@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 这个 XML 文件用于定义通用的 SQL 映射 -->
+<!-- 对应的 SQL 映射操作 -->
+
+<!-- 命名空间指定了对应的 Mapper 接口 -->
+<!-- 这个文件中的每个 ID 对应于 Mapper 接口中的方法，parameterType 属性指定了这些方法所需的参数类型 -->
+<mapper namespace="com.ivf.master.mapper.analysis.AnalysisMapper">
+
+    <select id="getVisitsCount" parameterType="com.ivf.master.entity.oracle.outpadm.ClinicMaster" resultType="java.lang.Integer">
+        <!-- SQL查询 OUTPADM.CLINIC_MASTER 表中的当日就诊量。 -->
+        select count(1)
+        from OUTPADM.CLINIC_MASTER
+        where TO_CHAR(VISIT_DATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+          and RETURNED_DATE is null
+          and CLINIC_TYPE <![CDATA[ <> ]]> '免费号'
+    </select>
+
+    <select id="getTodayTotal" parameterType="com.ivf.master.entity.oracle.outpbill.OutpRcptMaster" resultType="java.lang.Double">
+        <!-- SQL查询 当日交易总额 -->
+        select sum(CHARGES) as CHARGES
+        from (select sum(TOTAL_CHARGES) as CHARGES
+              from OUTPBILL.OUTP_RCPT_MASTER
+              where TO_CHAR(VISIT_DATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+              union all
+              select sum(CLINIC_CHARGE) as CHARGES
+              from OUTPADM.CLINIC_MASTER
+              where TO_CHAR(VISIT_DATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+                and RETURNED_DATE is null
+              union all
+              select nvl(sum(CHARGES), 0) as CHARGES
+              from inp_settle_master t
+              where trunc(t.SETTLING_DATE) = trunc(sysdate))
+    </select>
+
+    <select id="getInHospital" parameterType="com.ivf.master.entity.oracle.inpadm.PatsInHospital" resultType="java.lang.Integer">
+        <!-- SQL查询 当日在院人次 -->
+        select count(1) from INPADM.PATS_IN_HOSPITAL where bed_no is not null
+    </select>
+
+    <select id="getBeHospital" parameterType="com.ivf.master.entity.oracle.medrec.PatVisit" resultType="java.lang.Integer">
+        <!-- SQL查询 当日入院人次 -->
+        select count(*)
+        from pat_visit t
+        where trunc(t.ADMISSION_DATE_TIME) = trunc(sysdate)
+    </select>
+
+    <select id="getOutHospital" parameterType="com.ivf.master.entity.oracle.medrec.PatVisit" resultType="java.lang.Integer">
+        <!-- SQL查询 当日出院人次 -->
+        select count(*) from pat_visit t where trunc(t.DISCHARGE_DATE_TIME) = trunc(sysdate)
+    </select>
+
+    <select id="getTransplant" resultType="java.lang.Integer">
+        <!-- SQL查询 当日移植人数 -->
+        select 移植 from dbo.测试
+    </select>
+    
+    <select id="getTransplantClinic" resultType="java.util.HashMap">
+        <!-- SQL查询 当日取卵人数 -->
+        select 一诊室 as oneClinic,
+               二诊室 as twoClinic,
+               三诊室 as triClinic,
+               疑难门诊 as diffDisease
+        from dbo.测试
+    </select>
+
+    <select id="getRateTypeListMap" parameterType="com.ivf.master.entity.oracle.outpbill.OutpBillItems" resultType="java.util.HashMap">
+        <!-- SQL查询 当日门诊收入构成 -->
+        select subj_name, sum(costs + CHARGES) as costs
+        from (select '诊查费' SUBJ_NAME,
+                     sum(nvl(CLINIC_CHARGE, 0)) as costs,
+                     0 CHARGES
+              from CLINIC_MASTER
+              where TO_CHAR(VISIT_DATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+                and RETURNED_DATE is null
+              union
+              select a.fee_class_name as subj_name,
+                     sum(b.costs) as costs,
+                     sum(b.CHARGES) as CHARGES
+              from COMM.OUTP_RCPT_FEE_DICT a,
+                   (select fee.fee_class_name subj_name,
+                           sum(bill.costs) as costs,
+                           nvl(SUM(bill.CHARGES - bill.costs), 0) as CHARGES
+                    from OUTP_RCPT_MASTER rcpt,
+                         OUTP_BILL_ITEMS bill,
+                         OUTP_RCPT_FEE_DICT fee
+                    where fee.fee_class_code = bill.CLASS_ON_RCPT
+                      and rcpt.RCPT_NO = bill.RCPT_NO
+                      and TO_CHAR(rcpt.VISIT_DATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+                    group by fee.fee_class_name, fee.SERIAL_NO) b
+              where a.fee_class_name = b.subj_name(+)
+              group by a.SERIAL_NO, a.fee_class_name)
+        where costs is not null
+        group by subj_name
+        order by costs desc
+    </select>
+
+    <!-- 获取用户所在院区 -->
+    <select id="getHospitalCode" resultType="java.lang.String" parameterType="java.lang.String">
+        <!-- SQL查询用户所在院区 -->
+        select HOSPITAL_CODE
+        from comm.employee_dict a
+            left join comm.department_dict dd
+                on a.DEPT_CODE = dd.DEPT_ID
+        where a.USER_NAME = #{username}
+    </select>
+
+    <!-- 获取近七天门诊量 -->
+    <select id="getWeeklyVisitsListMap" resultType="java.util.HashMap" parameterType="com.ivf.master.entity.oracle.outpadm.ClinicMaster">
+        select to_char(visit_date, 'yyyy-mm-dd') as visit_date,
+               count(1) as count
+        from OUTPADM.CLINIC_MASTER
+        where visit_date between sysdate -7 and sysdate
+          and RETURNED_DATE is null
+          and CLINIC_TYPE <![CDATA[ <> ]]> '免费号'
+        group by visit_date
+        order by visit_date
+    </select>
+
+    <!-- 获取本月和上一个月的数据对比-->
+    <select id="getMonthlyMoneyListMap" resultType="java.util.HashMap" parameterType="com.ivf.master.entity.oracle.outpadm.ClinicMaster">
+        with rcpt as (select distinct trunc(VISIT_DATE) as visit_date,
+                                      to_char(trunc(VISIT_DATE), 'YYYY-MM') as month, to_char(trunc(VISIT_DATE), 'DD') as day, case when to_char(trunc(VISIT_DATE), 'yyyy-mm') = to_char(add_months(trunc(sysdate), -1), 'yyyy-mm') then
+            'left_month'
+            when to_char(trunc(VISIT_DATE), 'yyyy-mm') = to_char(trunc(sysdate), 'yyyy-mm') then
+            'this_month'
+        end
+        as inMonth
+        from outp_rcpt_master),
+        clinic as (select distinct trunc(VISIT_DATE) as visit_date,
+        to_char(trunc(VISIT_DATE), 'YYYY-MM') as month,
+        to_char(trunc(VISIT_DATE), 'DD') as day,
+        case
+        when to_char(trunc(VISIT_DATE), 'yyyy-mm') =
+        to_char(add_months(trunc(sysdate), -1), 'yyyy-mm')
+        then
+        'left_month'
+        when to_char(trunc(VISIT_DATE), 'yyyy-mm') = to_char(trunc(sysdate), 'yyyy-mm') then
+        'this_month'
+        end as inMonth
+        from CLINIC_MASTER
+        where VISIT_DATE <![CDATA[ <= ]]> sysdate)
+        select a.day, nvl(a.left_sum, 0) left_sum, nvl(b.this_sum, 0) this_sum
+        from (select visit_date, day, sum(TOTAL_CHARGES) as left_sum
+              from (select b.visit_date, b.day, TOTAL_CHARGES
+                  from OUTP_RCPT_MASTER a
+                  join rcpt b on trunc(a.VISIT_DATE) = b.visit_date
+                  where inMonth = 'left_month'
+                  union all
+                  select d.visit_date, d.day, CLINIC_CHARGE
+                  from CLINIC_MASTER c
+                  join clinic d on trunc(c.VISIT_DATE) = d.visit_date
+                  where d.inMonth = 'left_month'
+                  and RETURNED_DATE is null)
+              group by visit_date, day) a
+                 left outer join (select visit_date, day, sum (TOTAL_CHARGES) as this_sum
+                                  from (select b.visit_date, b.day, TOTAL_CHARGES
+                                      from OUTP_RCPT_MASTER a
+                                      join rcpt b on trunc(a.VISIT_DATE) = b.visit_date
+                                      where inMonth = 'this_month'
+                                      union all
+                                      select d.visit_date, d.day, CLINIC_CHARGE
+                                      from CLINIC_MASTER c
+                                      join clinic d on trunc(c.VISIT_DATE) = d.visit_date
+                                      where d.inMonth = 'this_month'
+                                      and RETURNED_DATE is null)
+                                  group by visit_date, day) b on a.day = b.day
+        order by day
+    </select>
+</mapper>
+    

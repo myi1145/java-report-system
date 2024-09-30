@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 这个 XML 文件用于定义与登录相关的SQL映射操作。它映射了LoginMapper接口的SQL查询。 -->
+
+<mapper namespace="com.ivf.master.mapper.login.LoginMapper">
+    <!-- 使用命名空间指定了对应的Mapper接口路径，确保MyBatis可以准确地将接口方法与XML文件中的SQL语句关联起来。 -->
+
+    <!-- 查询用户是否存在于数据库中 -->
+    <select id="SelectUser" parameterType="com.ivf.master.entity.mysql.comm.Employee" resultType="java.lang.Integer">
+        <!-- 使用id="SelectUser"与LoginMapper接口中的SelectUser方法相匹配。
+             parameterType指定了方法的参数类型为java.lang.String，对应于用户名。
+             resultType为java.lang.Integer，表示查询结果返回一个整数值，通常用于计数。 -->
+
+        <!-- SQL查询检查COMM.EMPLOYEE_DICT表中是否存在指定用户名的用户。 -->
+        select count(1) from comm.employee_dict where USER_NAME = #{username}
+    </select>
+
+    <!-- 查询指定用户名的用户密码 -->
+    <select id="GetPassword" resultType="java.util.Map" parameterType="java.lang.String">
+        <!-- 使用id="GetPassword"与LoginMapper接口中的GetPassword方法相匹配。
+             参数类型为java.lang.String，表示传入的用户名。
+             返回类型为java.util.Map，其中包含用户名和密码的键值对。 -->
+
+        <!-- SQL查询从COMM.EMPLOYEE_DICT表中检索用户名和密码。 -->
+        select NAME, PASSWORD from comm.employee_dict where USER_NAME = #{username}
+    </select>
+
+</mapper>

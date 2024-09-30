@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d8fb5d74-8094-4a80-9690-5fd9679d7246" name="Changes" comment="添加会计科目对照表维护功能">
+      <change afterPath="$PROJECT_DIR$/src/api/table" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/src/api/table/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/table/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/views/Example" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/src/views/Example/Dialog" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/src/views/Example/Dialog/ExampleDialog.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/views/Example/Dialog/components" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/src/views/Example/Dialog/components/Detail.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/views/Example/Dialog/components/Write.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/locales/zh-CN.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/locales/zh-CN.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/index.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2mmg3UgHCoUQhfFh4TeMCfMBGD1" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/Administrator/Desktop/vue/new/vue-element-plus/src/locales",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "C:\\Users\\Administrator\\Desktop\\vue\\new\\vue-element-plus\\node_modules\\stylelint",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\Administrator\\Desktop\\vue\\new\\vue-element-plus\\node_modules\\prettier",
+    "settings.editor.selected.configurable": "settings.vue",
+    "ts.external.directory.path": "C:\\Users\\Administrator\\Desktop\\vue\\new\\vue-element-plus\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\Desktop\vue\new\vue-element-plus\src\locales" />
+      <recent name="C:\Users\Administrator\Desktop\vue\new\vue-element-plus\src\router" />
+      <recent name="C:\Users\Administrator\Desktop\vue\new\vue-element-plus\src\api" />
+      <recent name="C:\Users\Administrator\Desktop\vue\new\vue-element-plus\src\views" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-WS-242.21829.149" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\Administrator\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="C:\Users\Administrator\Desktop\vue\new\vue-element-plus" />
+          <option name="myCopyRoot" value="C:\Users\Administrator\Desktop\vue\new\vue-element-plus" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="C:\Users\Administrator\Desktop\vue\new\vue-element-plus" />
+          <option name="myCopyRoot" value="C:\Users\Administrator\Desktop\vue\new\vue-element-plus" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d8fb5d74-8094-4a80-9690-5fd9679d7246" name="Changes" comment="" />
+      <created>1727686966267</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1727686966267</updated>
+      <workItem from="1727686967342" duration="1369000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="添加会计科目对照表维护功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加会计科目对照表维护功能" />
+  </component>
+  <component name="VueSettings">
+    <option name="packageName" value="C:\Program Files\nodejs\node_global\node_modules\@vue\language-server" />
+  </component>
+</project>

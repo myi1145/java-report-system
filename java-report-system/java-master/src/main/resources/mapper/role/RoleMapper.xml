@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 这个 XML 文件用于定义通用的 SQL 映射 -->
+<!-- 对应的 SQL 映射操作 -->
+
+<!-- 命名空间指定了对应的 Mapper 接口 -->
+<!-- 这个文件中的每个 ID 对应于 Mapper 接口中的方法，parameterType 属性指定了这些方法所需的参数类型 -->
+<mapper namespace="com.ivf.master.mapper.role.RoleMapper">
+
+    <!-- 根据主键查询数据的 SQL 映射 -->
+    <select id="selectMenuId" resultType="java.lang.Integer" parameterType="java.lang.String">
+        <!-- 根据用户名查询菜单ID -->
+        <!-- 此查询通过联结员工表、部门表和部门菜单表，根据用户名查找对应的菜单ID -->
+        SELECT c.menu_id
+        FROM comm.employee_dict a
+            JOIN comm.department_dict b ON a.DEPT_CODE = b.DEPT_ID
+            JOIN authority.department_menus c ON b.DEPT_ID = c.dept_id
+        WHERE a.USER_NAME = #{username};
+    </select>
+
+    <!-- 根据菜单ID列表查询对应的菜单及其元数据 -->
+    <!-- 此查询根据菜单ID列表，从菜单表和菜单元数据表中查询菜单详情及其元数据，如标题、图标等 -->
+    <select id="selectRoleList" resultMap="menuWithMetaResultMap">
+        SELECT m.*,
+            mm.title      AS metaTitle,
+            mm.icon       AS metaIcon,
+            mm.alwaysShow AS metaAlwaysShow,
+            mm.noCache    AS metaNoCache,
+            mm.affix      AS metaAffix
+        FROM authority.menus m
+            LEFT JOIN authority.menu_meta mm ON m.id = mm.menu_id
+        WHERE m.id IN
+        <!-- 使用foreach处理列表参数，生成IN查询条件 -->
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY m.order_index
+    </select>
+
+    <!-- 结果映射定义：菜单及其元数据 -->
+    <!-- 详细定义如何将查询结果映射到Menus实体类，包括菜单的基本信息和关联的元数据 -->
+    <resultMap id="menuWithMetaResultMap" type="com.ivf.master.entity.mysql.authority.Menus">
+        <id property="id" column="id"/>
+        <result property="path" column="path"/>
+        <result property="component" column="component"/>
+        <result property="redirect" column="redirect"/>
+        <result property="name" column="name"/>
+        <result property="parentId" column="parent_id"/>
+        <!-- 通过association映射复杂类型MenuMeta，定义如何将查询结果映射到MenuMeta实体类 -->
+        <association property="meta" javaType="com.ivf.master.entity.mysql.authority.MenuMeta">
+            <id property="menuId" column="id"/>
+            <result property="title" column="metaTitle"/>
+            <result property="icon" column="metaIcon"/>
+            <result property="alwaysShow" column="metaAlwaysShow"/>
+            <result property="noCashe" column="metaNoCache"/>
+            <result property="affix" column="metaAffix"/>
+        </association>
+    </resultMap>
+
+</mapper>
